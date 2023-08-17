@@ -79,7 +79,7 @@ def LoadModel(data, mdlList):
                 vy = f.readFloat()
                 vz = f.readFloat()
                 nz = f.readFloat()
-                vertices.append(NoeVec3([vx,vy,-vz]))
+                vertices.append(NoeVec3([vx,vy,vz]))
         elif Chunk == int(16777731):
             f.seek(2,1)
             VertexCount = f.readByte() // 2
@@ -90,7 +90,7 @@ def LoadModel(data, mdlList):
                 vz = f.readShort() / 4096.0
                 nz = f.readShort() / 4096.0
                 f.seek(8,1)
-                vertices.append(NoeVec3([vx,vy,-vz]))
+                vertices.append(NoeVec3([vx,vy,vz]))
             
         elif Chunk == int(16777732):
             f.seek(2,1)
@@ -102,7 +102,7 @@ def LoadModel(data, mdlList):
                 vz = f.readFloat()
                 nz = f.readFloat()
                 f.seek(16,1)
-                vertices.append(NoeVec3([vx,vy,-vz]))
+                vertices.append(NoeVec3([vx,vy,vz]))
             
     mesh = NoeMesh([], vertices, "default")
     meshes.append(mesh)
