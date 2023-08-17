@@ -1,9 +1,8 @@
 # GHGNoesis
 this imports ghg models into noesis, the bones are still broken, missing faces, unable to assign uvs and vertex colors and other things
 
-![nigel______](https://github.com/DarkShadowNemo/GHGNoesis/assets/119450522/75947be3-6d2b-47ac-b70d-50b2d6eb170a)
 
 
-![rayyyyyyyyyyyyyyyyyyy](https://github.com/DarkShadowNemo/GHGNoesis/assets/119450522/cd074777-3780-4b61-b889-74258224729e)
+ghg bones are correct now, now the parent id is still getting to zero that's a bit of problem
 
-some ghg bones gets correctly, most of them don't so if anyone knows how to fix it in noesis using inverse exactly like hgo like they did in the wrath of cortex but it's still broken
+![nemo bones correct__](https://github.com/DarkShadowNemo/GHGNoesis/assets/119450522/4e77a8f8-15f4-45b4-85d3-1e897d8da0b5)
