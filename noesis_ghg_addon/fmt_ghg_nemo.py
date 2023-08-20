@@ -1,9 +1,21 @@
 from inc_noesis import *
+import os
+
+#export options
+TextureCount_ON = False
+MaterialCount_ON = False
+BoneCount_ON = False
+NamedTable_ON = False
+UV_ON = False
+VertexColors_ON = False
+PointClouds_ON = False
+Weights_ON = False
 
 def registerNoesisTypes():
     handle = noesis.register("PS2Nemo", ".ghg")
     noesis.setHandlerTypeCheck(handle, CheckType)
     noesis.setHandlerLoadModel(handle, LoadModel)
+    noesis.setHandlerWriteModel(handle, WriteModel)
     #noesis.logPopup()
     return 1
 
@@ -14,20 +26,20 @@ def CheckType(data):
 
 def LoadModel(data, mdlList):
 
-    global bone_parent
-
     f = NoeBitStream(data)
     vertices=[]
     vertices2=[]
     meshes = []
     bones = []
-    #faces=[0,0,0]
+    faces = [0,0,0]
     PosMatrix = [0]
     PosBones = []
+    bone_pare = []
+    names = None
     #wrong
-    fa = -1
-    fb = 0
-    fc = 1
+    fa = -3
+    fb = -2
+    fc = -1
     parent_id=-1
     #
     FileSize_ = f.readInt()
@@ -37,29 +49,45 @@ def LoadModel(data, mdlList):
     MaterialCount = f.readInt()
     MaterialEntrySize1 = f.readInt()
     BoneCount = f.readInt()
+    f.seek(-4,1)
+    BoneCount2 = f.readInt()
+    f.seek(-4,1)
+    BoneCount3 = f.readInt()
         
     BoneEntrySize1 = f.readInt()
     BoneEntrySize2 = f.readInt()
     BoneEntrySize3 = f.readInt()
+    unk2 = f.readInt()
+    unkEntrySize1 = f.readInt()
+    namedtableStartEntry1 = f.readInt()
+    namedtableEntrySize1 = f.readInt()
+    f.seek(namedtableStartEntry1-56,1)
+    names = f.read(namedtableEntrySize1)
+    f.seek(0)
+    f.seek(40,1)
     f.seek(BoneEntrySize1-40,1)
+    bone_id = -1
     for k in range(BoneCount):
-        
-        boneMat_ = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse() # unk
-        bdiv4_v00 = f.readFloat()
-        bdiv4_v04 = f.readFloat()
-        bdiv4_v08 = f.readFloat()
+        boneMat = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse()
+        f.seek(4,1)
+        f.seek(4,1)
+        f.seek(4,1)
         f.seek(4,1)
         bone_parent = f.readByte()
         name_offset = f.readInt()-1
         f.seek(11,1)
-        
-    for x in range(BoneCount):
-        boneMat = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse() # pos
-        #bones.append(NoeBone(k+x,"dragonjan_bones",boneMat,None,bone_parent))
-
+    for i in range(BoneCount):
+        boneMat = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse() # negative pos
     for j in range(BoneCount):
-        boneMa = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse() # negative pos
-        bones.append(NoeBone(k+x+j, "dragonjan_bones",boneMa,None,bone_parent))
+        boneMa = NoeMat44.fromBytes(f.read(64),0).toMat43().inverse() # correct pos
+        bones.append(NoeBone(k+i+j, "dragonjan_bones",boneMa,None,bone_parent))
+
+    f.seek(0)
+    WeightFileSize = f.readInt()
+    f.seek(-4,1)
+    for i in range(int(WeightFileSize)):
+        pass
+    
     
         
     
@@ -104,12 +132,19 @@ def LoadModel(data, mdlList):
                 f.seek(16,1)
                 vertices.append(NoeVec3([vx,vy,vz]))
             
-    mesh = NoeMesh([], vertices, "default")
+    mesh = NoeMesh(faces, vertices, "default")
     meshes.append(mesh)
     mdl = NoeModel(meshes)
     mdl.setBones(bones)
+    mesh.setWeights([])
     mdlList.append(mdl)
+    print(faces)
     return 1
+
+def WriteModel(mdl, f):
+    pass
+        
+    
                 
             
 
